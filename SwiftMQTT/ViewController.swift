@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftMQTTFramework
 
 class ViewController: UIViewController, SwiftMQTTClientDelegate {
 
@@ -18,6 +19,8 @@ class ViewController: UIViewController, SwiftMQTTClientDelegate {
         self.client = SwiftMQTTClient(clientId: NSProcessInfo().globallyUniqueString, account: SwiftMQTTAccount(username: "tripleCC", password: "cg"), keepalive: 90)
         self.client?.connectToHost("localhost", port: 1883)
         self.client?.delegate = self
+        
+        
     }
 
     @IBAction func subscribe(sender: AnyObject) {

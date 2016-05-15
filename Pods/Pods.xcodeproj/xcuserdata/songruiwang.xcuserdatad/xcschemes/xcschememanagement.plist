@@ -4,30 +4,29 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>SwiftMQTT.xcscheme</key>
+		<key>CocoaAsyncSocket.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
-		<key>SwiftMQTTFramework.xcscheme</key>
+		<key>Pods.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>2</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>D60256151CE5D830004D844C</key>
+		<key>6FFDF15F57303A5A0972809154423AFE</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D602561E1CE5D830004D844C</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>D6571AA01CCF44270038E0CD</key>
+		<key>B1D17BA74BEACBD28F897F231B5907A4</key>
 		<dict>
 			<key>primary</key>
 			<true/>

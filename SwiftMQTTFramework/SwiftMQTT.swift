@@ -69,9 +69,6 @@ public enum SwiftMQTTQosLevel : UInt8 {
     case ExactlyOnce    = 2
 }
 
-typealias SwiftMQTTDidConnectAction = () -> Void
-typealias SwiftMQTTDidDisconnectAction = () -> Void
-
 public protocol SwiftMQTTConnectFlagProtocol {
     var connectFlag: UInt8 {get set}
     var usernameFlag: Bool {get set}
@@ -89,27 +86,27 @@ extension SwiftMQTTConnectFlagProtocol {
      * | username | password | willretain | willqos | willflag | cleansession | reserved |
      * +----------+----------+------------+---------+----------+--------------+----------+
      */
-    var usernameFlag: Bool {
+    public var usernameFlag: Bool {
         get { return Bool((connectFlag & 0x80) >> 7) }
         set { connectFlag = (UInt8(newValue) << 7) | (connectFlag & 0x7F) }
     }
-    var passwordFlag: Bool {
+    public var passwordFlag: Bool {
         get { return Bool((connectFlag & 0x40) >> 6) }
         set { connectFlag = (UInt8(newValue) << 6) | (connectFlag & 0xBF) }
     }
-    var willRetain: Bool {
+    public var willRetain: Bool {
         get { return Bool((connectFlag & 0x20) >> 5) }
         set { connectFlag = (UInt8(newValue) << 5) | (connectFlag & 0xDF) }
     }
-    var willQos: SwiftMQTTQosLevel {
+    public var willQos: SwiftMQTTQosLevel {
         get { return SwiftMQTTQosLevel(rawValue: (connectFlag & 0x18) >> 3) ?? .AtMostOnce }
         set { connectFlag = (UInt8(newValue.rawValue) << 3) | (connectFlag & 0xE7) }
     }
-    var willFlag: Bool {
+    public var willFlag: Bool {
         get { return Bool((connectFlag & 0x08) >> 2) }
         set { connectFlag = (UInt8(newValue) << 2) | (connectFlag & 0xFA) }
     }
-    var cleanSession: Bool {
+    public var cleanSession: Bool {
         get { return Bool((connectFlag & 0x04) >> 1) }
         set { connectFlag = (UInt8(newValue) << 1) | (connectFlag & 0xFD) }
     }
@@ -149,11 +146,11 @@ extension SwiftMQTTCommandProtocol {
 }
 
 public protocol SwiftMQTTVariableHeaderProtocol {
-    var variableHeader: NSData {get}
+     var variableHeader: NSData {get}
 }
 
 extension SwiftMQTTVariableHeaderProtocol {
-    var variableHeader: NSData { return NSData() }
+    public var variableHeader: NSData { return NSData() }
 }
 
 public protocol SwiftMQTTPayloadProtocol {
@@ -161,7 +158,7 @@ public protocol SwiftMQTTPayloadProtocol {
 }
 
 extension SwiftMQTTPayloadProtocol {
-    var payload: NSData { return NSData() }
+    public var payload: NSData { return NSData() }
 }
 
 public protocol SwiftMQTTMessageProtocol : SwiftMQTTFixedHeaderProtocol {
@@ -194,14 +191,14 @@ extension SwiftMQTTFixedHeaderProtocol {
     }
 }
 
-struct SwiftMQTTConnectMessage : SwiftMQTTMessageProtocol, SwiftMQTTClientProtocol, SwiftMQTTConnectFlagProtocol {
-    var command = UInt8(0x00)
-    var connectFlag = UInt8(0x00)
+public struct SwiftMQTTConnectMessage : SwiftMQTTMessageProtocol, SwiftMQTTClientProtocol, SwiftMQTTConnectFlagProtocol {
+    public var command = UInt8(0x00)
+    public var connectFlag = UInt8(0x00)
     var clientId: String
     var will: SwiftMQTTWill?
     var account: SwiftMQTTAccount?
     var keepalive = UInt16(60)
-    var variableHeader: NSData {
+    public var variableHeader: NSData {
         let variableHeader = NSMutableData()
         variableHeader.appendMQTTString(protocolName)
         variableHeader.appendByte(protocolLevel)
@@ -209,7 +206,7 @@ struct SwiftMQTTConnectMessage : SwiftMQTTMessageProtocol, SwiftMQTTClientProtoc
         variableHeader.appendUInt16(keepalive)
         return variableHeader
     }
-    var payload: NSData {
+    public var payload: NSData {
         let payload = NSMutableData()
         // 客户端标识符->遗嘱主题->遗嘱消息->用户名->密码
         payload.appendMQTTString(clientId)
@@ -249,11 +246,11 @@ public protocol SwiftMQTTAckMessageProtocol: SwiftMQTTCommandProtocol {
     init?(_ bytes: [UInt8], command: UInt8)
 }
 
-struct SwiftMQTTConnAckMessage : SwiftMQTTAckMessageProtocol {
-    var command = UInt8(0x00)
-    var sessionPresent: Bool
-    var connectReturnCode: SwiftMQTTConnectReturnCode
-    init?(_ bytes: [UInt8], command: UInt8) {
+public struct SwiftMQTTConnAckMessage : SwiftMQTTAckMessageProtocol {
+    public var command = UInt8(0x00)
+    public var sessionPresent: Bool
+    public var connectReturnCode: SwiftMQTTConnectReturnCode
+    public init?(_ bytes: [UInt8], command: UInt8) {
         guard bytes.count == 2 else { return nil }
         sessionPresent = Bool(bytes[0])
         connectReturnCode = SwiftMQTTConnectReturnCode(rawValue: bytes[1]) ?? .Accepted
@@ -263,9 +260,9 @@ struct SwiftMQTTConnAckMessage : SwiftMQTTAckMessageProtocol {
 
 public struct SwiftMQTTPublishMessage : SwiftMQTTAckMessageProtocol, SwiftMQTTMessageProtocol {
     public var command = UInt8(0x00)
-    var topicName: String
-    var messageId: UInt16?
-    var message: String?
+    public var topicName: String
+    public var messageId: UInt16?
+    public var message: String?
     
     public var variableHeader: NSData {
         let variableHeader = NSMutableData()
@@ -311,19 +308,19 @@ public struct SwiftMQTTPublishMessage : SwiftMQTTAckMessageProtocol, SwiftMQTTMe
     }
 }
 
-protocol SwiftMQTTMessageMessageIdProtocol {
+public protocol SwiftMQTTMessageMessageIdProtocol {
     var messageId: UInt16 {get set}
 }
 
 extension SwiftMQTTMessageProtocol where Self: SwiftMQTTMessageMessageIdProtocol {
-    var variableHeader: NSData {
+    public var variableHeader: NSData {
         return NSMutableData().appendUInt16(messageId)
     }
 }
 
-struct SwiftMQTTPubAckMessage : SwiftMQTTAckMessageProtocol, SwiftMQTTMessageProtocol, SwiftMQTTMessageMessageIdProtocol {
-    var command = UInt8(0x00)
-    var messageId: UInt16
+public struct SwiftMQTTPubAckMessage : SwiftMQTTAckMessageProtocol, SwiftMQTTMessageProtocol, SwiftMQTTMessageMessageIdProtocol {
+    public var command = UInt8(0x00)
+    public var messageId: UInt16
     
     init(messageId: UInt16) {
         self.messageId = messageId
@@ -331,138 +328,138 @@ struct SwiftMQTTPubAckMessage : SwiftMQTTAckMessageProtocol, SwiftMQTTMessagePro
         qosLevel = .AtLeastOnce
     }
     
-    init?(_ bytes: [UInt8], command: UInt8) {
+    public init?(_ bytes: [UInt8], command: UInt8) {
         guard bytes.count == 2 else { return nil }
         messageId = UInt16(bytes[0]) << 8 + UInt16(bytes[1])
         self.command = command
     }
 }
 
-struct SwiftMQTTPubRelMessage : SwiftMQTTAckMessageProtocol, SwiftMQTTMessageProtocol, SwiftMQTTMessageMessageIdProtocol {
-    var command = UInt8(0x00)
-    var messageId: UInt16
+public struct SwiftMQTTPubRelMessage : SwiftMQTTAckMessageProtocol, SwiftMQTTMessageProtocol, SwiftMQTTMessageMessageIdProtocol {
+    public var command = UInt8(0x00)
+    public var messageId: UInt16
     
-    init(messageId: UInt16, qosLevel: SwiftMQTTQosLevel = .AtLeastOnce) {
+    public init(messageId: UInt16, qosLevel: SwiftMQTTQosLevel = .AtLeastOnce) {
         self.messageId = messageId
         self.qosLevel = qosLevel
         messageType = .PubRel
     }
-    init?(_ bytes: [UInt8], command: UInt8) {
+    public init?(_ bytes: [UInt8], command: UInt8) {
         guard bytes.count == 2 else { return nil }
         messageId = UInt16(bytes[0]) << 8 + UInt16(bytes[1])
         self.command = command
     }
 }
 
-struct SwiftMQTTPubRecMessage : SwiftMQTTAckMessageProtocol, SwiftMQTTMessageProtocol, SwiftMQTTMessageMessageIdProtocol {
-    var command = UInt8(0x00)
-    var messageId: UInt16
+public struct SwiftMQTTPubRecMessage : SwiftMQTTAckMessageProtocol, SwiftMQTTMessageProtocol, SwiftMQTTMessageMessageIdProtocol {
+    public var command = UInt8(0x00)
+    public var messageId: UInt16
     
-    init(messageId: UInt16) {
+    public init(messageId: UInt16) {
         self.messageId = messageId
         messageType = .PubRec
         qosLevel = .ExactlyOnce
     }
-    init?(_ bytes: [UInt8], command: UInt8) {
+    public init?(_ bytes: [UInt8], command: UInt8) {
         guard bytes.count == 2 else { return nil }
         messageId = UInt16(bytes[0]) << 8 + UInt16(bytes[1])
         self.command = command
     }
 }
 
-struct SwiftMQTTPubCompMessage : SwiftMQTTAckMessageProtocol, SwiftMQTTMessageProtocol, SwiftMQTTMessageMessageIdProtocol {
-    var command = UInt8(0x00)
-    var messageId: UInt16
+public struct SwiftMQTTPubCompMessage : SwiftMQTTAckMessageProtocol, SwiftMQTTMessageProtocol, SwiftMQTTMessageMessageIdProtocol {
+    public var command = UInt8(0x00)
+    public var messageId: UInt16
     
-    init(messageId: UInt16) {
+    public init(messageId: UInt16) {
         self.messageId = messageId
         messageType = .PubComp
         qosLevel = .ExactlyOnce
     }
-    init?(_ bytes: [UInt8], command: UInt8) {
+    public init?(_ bytes: [UInt8], command: UInt8) {
         guard bytes.count == 2 else { return nil }
         messageId = UInt16(bytes[0]) << 8 + UInt16(bytes[1])
         self.command = command
     }
 }
 
-struct SwiftMQTTSubscribeMessage : SwiftMQTTMessageProtocol, SwiftMQTTMessageMessageIdProtocol {
-    var command = UInt8(0x02)
-    var messageId: UInt16
-    var filterTopics: [String : SwiftMQTTQosLevel]
+public struct SwiftMQTTSubscribeMessage : SwiftMQTTMessageProtocol, SwiftMQTTMessageMessageIdProtocol {
+    public var command = UInt8(0x02)
+    public var messageId: UInt16
+    public var filterTopics: [String : SwiftMQTTQosLevel]
 
-    var payload: NSData {
+    public var payload: NSData {
         return filterTopics.reduce(NSMutableData()) { $0.appendMQTTString($1.0).appendByte($1.1.rawValue) }
     }
     
-    init(messageId: UInt16, filterTopics topics: [String : SwiftMQTTQosLevel]) {
+    public init(messageId: UInt16, filterTopics topics: [String : SwiftMQTTQosLevel]) {
         self.filterTopics = topics
         self.messageId = messageId
         messageType = .Subscribe
     }
 }
 
-struct SwiftMQTTSubAckMessage : SwiftMQTTAckMessageProtocol {
-    var command = UInt8(0x00)
-    var messageId: UInt16
-    var qosLevels: [SwiftMQTTQosLevel]
+public struct SwiftMQTTSubAckMessage : SwiftMQTTAckMessageProtocol {
+    public var command = UInt8(0x00)
+    public var messageId: UInt16
+    public var qosLevels: [SwiftMQTTQosLevel]
     
-    init?(_ bytes: [UInt8], command: UInt8) {
+    public init?(_ bytes: [UInt8], command: UInt8) {
         messageId = UInt16(bytes[0]) << 8 + UInt16(bytes[1])
         qosLevels = bytes[2..<bytes.count].flatMap{ SwiftMQTTQosLevel(rawValue: $0) }
         self.command = command
     }
 
-    init(messageId: UInt16, qosLevels: [SwiftMQTTQosLevel]) {
+    public init(messageId: UInt16, qosLevels: [SwiftMQTTQosLevel]) {
         self.qosLevels = qosLevels
         self.messageId = messageId
     }
 }
 
-struct SwiftMQTTUnsubscribeMessage : SwiftMQTTMessageProtocol, SwiftMQTTMessageMessageIdProtocol {
-    var command = UInt8(0x02)
-    var messageId: UInt16
-    var topics: [String]
+public struct SwiftMQTTUnsubscribeMessage : SwiftMQTTMessageProtocol, SwiftMQTTMessageMessageIdProtocol {
+    public var command = UInt8(0x02)
+    public var messageId: UInt16
+    public var topics: [String]
 
-    var payload: NSData {
+    public var payload: NSData {
         return topics.reduce(NSMutableData()) { $0.appendMQTTString($1) }
     }
     
-    init(messageId: UInt16, topics: [String]) {
+    public init(messageId: UInt16, topics: [String]) {
         self.topics = topics
         self.messageId = messageId
         messageType = .Unsubscribe
     }
 }
 
-struct SwiftMQTTUnsubBackMessage : SwiftMQTTAckMessageProtocol {
-    var command = UInt8(0x00)
-    var messageId: UInt16
+public struct SwiftMQTTUnsubBackMessage : SwiftMQTTAckMessageProtocol {
+    public var command = UInt8(0x00)
+    public var messageId: UInt16
     
-    init?(_ bytes: [UInt8], command: UInt8) {
+    public init?(_ bytes: [UInt8], command: UInt8) {
         guard bytes.count == 2 else { return nil }
         messageId = UInt16(bytes[0]) << 8 + UInt16(bytes[1])
         self.command = command
     }
 }
 
-struct SwiftMQTTPingReqMessage : SwiftMQTTMessageProtocol {
-    var command = UInt8(0x00)
-    init() {
+public struct SwiftMQTTPingReqMessage : SwiftMQTTMessageProtocol {
+    public var command = UInt8(0x00)
+    public init() {
         messageType = .PingReq
     }
 }
 
-struct SwiftMQTTPingRespMessage : SwiftMQTTAckMessageProtocol {
-    var command = UInt8(0x00)
-    init?(_ bytes: [UInt8], command: UInt8) {
+public struct SwiftMQTTPingRespMessage : SwiftMQTTAckMessageProtocol {
+    public var command = UInt8(0x00)
+    public init?(_ bytes: [UInt8], command: UInt8) {
         self.command = command
     }
 }
 
-struct SwiftMQTTDisconnectMessage : SwiftMQTTMessageProtocol {
-    var command = UInt8(0x00)
-    init() {
+public struct SwiftMQTTDisconnectMessage : SwiftMQTTMessageProtocol {
+    public var command = UInt8(0x00)
+    public init() {
         messageType = .Disconnect
     }
 }

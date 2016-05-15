@@ -7,16 +7,17 @@
 //
 
 import Foundation
+import CocoaAsyncSocket
 /**
  *  如果使用了SwiftMQTTWill，则willFlag应该为true
  *  所以这里并不提供willFlag字段
  */
-struct SwiftMQTTWill {
-    var willTopic: String
-    var willMessage: String
-    var willRetain: Bool
-    var willQos: SwiftMQTTQosLevel
-    init(willTopic: String, willMessage: String, willRetain: Bool = true, willQos: SwiftMQTTQosLevel = .AtLeastOnce) {
+public struct SwiftMQTTWill {
+    public var willTopic: String
+    public var willMessage: String
+    public var willRetain: Bool
+    public var willQos: SwiftMQTTQosLevel
+    public init(willTopic: String, willMessage: String, willRetain: Bool = true, willQos: SwiftMQTTQosLevel = .AtLeastOnce) {
         self.willTopic = willTopic
         self.willMessage = willMessage
         self.willRetain = willRetain
@@ -24,12 +25,16 @@ struct SwiftMQTTWill {
     }
 }
 
-struct SwiftMQTTAccount {
-    var username: String?
-    var password: String?
-    var accountFlag: (Bool, Bool) { return (usernameFlag, passwordFlag) }
-    var usernameFlag: Bool { return username != nil }
-    var passwordFlag: Bool { return password != nil }
+public struct SwiftMQTTAccount {
+    public var username: String?
+    public var password: String?
+    public var accountFlag: (Bool, Bool) { return (usernameFlag, passwordFlag) }
+    public var usernameFlag: Bool { return username != nil }
+    public var passwordFlag: Bool { return password != nil }
+    public init(username: String?, password: String?) {
+        self.username = username
+        self.password = password
+    }
 }
 
 protocol SwiftMQTTClientProtocol {
@@ -51,21 +56,26 @@ public protocol SwiftMQTTClientDelegate: class {
     func mqttClient(client: SwiftMQTTClient, didReceiveMessage message: SwiftMQTTAckMessageProtocol?)
 }
 
+
+typealias SwiftMQTTDidConnectAction = () -> Void
+typealias SwiftMQTTDidDisconnectAction = () -> Void
+public typealias SwiftMQTTdidReceiveMessageHandler = (SwiftMQTTAckMessageProtocol?) -> Void
 public class SwiftMQTTClient : NSObject, SwiftMQTTClientProtocol {
-    var didConnectAction: SwiftMQTTDidConnectAction?
-    var didDisconnectAction: SwiftMQTTDidDisconnectAction?
-    var timeout = NSTimeInterval(60)
-    var clientId: String
-    var account: SwiftMQTTAccount?
-    var will: SwiftMQTTWill?
-    var cleanSession = Bool(true)
-    var host: String!
-    var port: UInt16!
-    var keepalive: UInt16 {
+//    var didConnectAction: SwiftMQTTDidConnectAction?
+//    var didDisconnectAction: SwiftMQTTDidDisconnectAction?
+    public var didReceiveMessageHandler: SwiftMQTTdidReceiveMessageHandler?
+    public var timeout = NSTimeInterval(60)
+    public var clientId: String
+    public var account: SwiftMQTTAccount?
+    public var will: SwiftMQTTWill?
+    public var cleanSession = Bool(true)
+    public var host: String!
+    public var port: UInt16!
+    public var keepalive: UInt16 {
         didSet { keepaliveTimer.interval = UInt64(keepalive) }
     }
-    var status: SwiftMQTTStatus
-    var delegate: SwiftMQTTClientDelegate?
+    public var status: SwiftMQTTStatus
+    public var delegate: SwiftMQTTClientDelegate?
     
     private var keepaliveTimer = SwiftMQTTTimer(queue: dispatch_get_global_queue(0, 0))
     private lazy var messageDecoder: SwiftMQTTMessageDecoder = {
@@ -84,7 +94,7 @@ public class SwiftMQTTClient : NSObject, SwiftMQTTClientProtocol {
         return dispatch_get_main_queue()
     }
     
-    init(clientId: String!, will: SwiftMQTTWill? = nil, account: SwiftMQTTAccount? = nil, keepalive: UInt16 = UInt16(60)) {
+    public init(clientId: String!, will: SwiftMQTTWill? = nil, account: SwiftMQTTAccount? = nil, keepalive: UInt16 = UInt16(60)) {
         self.clientId = clientId
         self.will = will
         self.account = account
@@ -101,6 +111,10 @@ public class SwiftMQTTClient : NSObject, SwiftMQTTClientProtocol {
         objc_sync_enter(self)
         messageId += 1
         objc_sync_exit(self)
+    }
+    
+    deinit {
+        SMPrint("client is released.")
     }
 }
 
@@ -170,6 +184,7 @@ extension SwiftMQTTClient: SwiftMQTTMessageDecoderDelegate {
         }
         
         delegate?.mqttClient(self, didReceiveMessage: message)
+        didReceiveMessageHandler?(message)
     }
     
     func keepaliveTimerCallBack() {

@@ -7335,8 +7335,6 @@ static OSStatus SSLWriteFunction(SSLConnectionRef connection, const void *data, 
 	LogTrace();
 	
 	static dispatch_once_t predicate;
-    // 创建cfstreamThread线程的开销较大
-    // 所以，当前执行的的应用中，只会有一条cfstreamThread线程
 	dispatch_once(&predicate, ^{
 		
 		cfstreamThreadRetainCount = 0;
@@ -7344,7 +7342,7 @@ static OSStatus SSLWriteFunction(SSLConnectionRef connection, const void *data, 
 	});
 	
 	dispatch_sync(cfstreamThreadSetupQueue, ^{ @autoreleasepool {
-		// cfstreamThreadRetainCount代表cfstreamThread被多少socket所持有
+		
 		if (++cfstreamThreadRetainCount == 1)
 		{
 			cfstreamThread = [[NSThread alloc] initWithTarget:self
@@ -7365,8 +7363,6 @@ static OSStatus SSLWriteFunction(SSLConnectionRef connection, const void *data, 
 	// So what we're going to do is use a little delay before taking it down.
 	// This way it can be reused properly in situations where multiple sockets are continually in flux.
 	
-    // 考虑到创建cfstreamThread线程开销较大，在多个socket链接不稳定的情况下，可能会频繁关闭cfstreamThread线程
-    // 所以这里延迟30s后，再判断是否关闭线程
 	int delayInSeconds = 30;
 	dispatch_time_t when = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
 	dispatch_after(when, cfstreamThreadSetupQueue, ^{ @autoreleasepool {
@@ -7378,8 +7374,7 @@ static OSStatus SSLWriteFunction(SSLConnectionRef connection, const void *data, 
 			LogWarn(@"Logic error concerning cfstreamThread start / stop");
 			return_from_block;
 		}
-		// 当cfstreamThread关联的socket连接数归零时，
-        // 设置线程的isCancelled标志位，cfstreamThread中根据isCancelled停止正在运行的线程
+		
 		if (--cfstreamThreadRetainCount == 0)
 		{
 			[cfstreamThread cancel]; // set isCancelled flag

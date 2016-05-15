@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "0"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SwiftMQTTFrameworkTests/SwiftMQTTFrameworkTests.swift"
+            timestampString = "484994249.421369"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "107"
+            endingLineNumber = "107"
+            landmarkName = "testSubscribe()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SwiftMQTTFrameworkTests/SwiftMQTTFrameworkTests.swift"
+            timestampString = "484994249.421369"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "101"
+            endingLineNumber = "101"
+            landmarkName = "testSubscribe()"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SwiftMQTTFrameworkTests.SwiftMQTTFrameworkTests.(testSubscribe () -&gt; ()).(closure #1)"
+                  moduleName = "SwiftMQTTFrameworkTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/songruiwang/GitHub/SwiftMQTT/SwiftMQTTFrameworkTests/SwiftMQTTFrameworkTests.swift"
+                  timestampString = "484994251.165545"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "101"
+                  endingLineNumber = "101"
+                  offsetFromSymbolStart = "1743">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SwiftMQTTFrameworkTests.SwiftMQTTFrameworkTests.(testSubscribe () -&gt; ()).(closure #1).(closure #1)"
+                  moduleName = "SwiftMQTTFrameworkTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/songruiwang/GitHub/SwiftMQTT/SwiftMQTTFrameworkTests/SwiftMQTTFrameworkTests.swift"
+                  timestampString = "484994251.165816"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "101"
+                  endingLineNumber = "101"
+                  offsetFromSymbolStart = "19">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SwiftMQTTFrameworkTests/SwiftMQTTFrameworkTests.swift"
+            timestampString = "484994249.421369"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
+            landmarkName = "testSubscribe()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SwiftMQTTFrameworkTests/SwiftMQTTFrameworkTests.swift"
+            timestampString = "484994249.421369"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
+            landmarkName = "testSubscribe()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
