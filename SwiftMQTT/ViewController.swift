@@ -30,7 +30,7 @@ class ViewController: UIViewController, SwiftMQTTClientDelegate {
         client?.unsubscribeMessageWithTopics(["ziroomer/+"])
     }
     @IBAction func send(sender: AnyObject) {
-        self.client?.publishMessageWithTopicName("ziroomer/wifi", message: "tripleCC", qosLevel: .ExactlyOnce)
+        client?.publishMessageWithTopicName("ziroomer/wifi", message: "tripleCC", qosLevel: .ExactlyOnce)
     }
     @IBAction func disconnect(sender: AnyObject) {
         client?.disconnect()
